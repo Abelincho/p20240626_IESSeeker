@@ -2,13 +2,19 @@
   "name": "p20240626_iesseeker",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node ./src/index.js"
   },
   "author": "Abel Saña Falagán",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2",
+    "playwright": "^1.45.0",
+    "telegraf": "^4.16.3",
+    "ws": "^8.17.1"
   }
 }
