@@ -3,28 +3,32 @@ import { Telegraf } from "telegraf";
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-let craInterval;
-
-const checkRegistrationAvailability = async (ctx) => {
+let currentStatus = 'Not seeking';
+const checkRegistrationAvailability = async () => {
     seek().then((message) => {
-        console.log(message);
-        ctx.reply(message);
+        currentStatus = message;
     });
 };
 
+setInterval(() => {
+    checkRegistrationAvailability();
+    console.log(currentStatus);
+}, 1000 * 5);
+
 
 bot.command('seek', async (ctx) => {
-    const a = ctx;
     ctx.reply('Seeking...');
-    checkRegistrationAvailability(ctx);
-    craInterval = setInterval(async () => {
-        checkRegistrationAvailability(ctx);
+    ctx.reply(currentStatus);
+    const craInterval = setInterval(async () => {
+        ctx.reply(currentStatus);
     }, 1000 * 10);
+
+    bot.command('stopseeking', async (ctx) => {
+        clearInterval(craInterval);
+        ctx.reply('Seeking stopped');
+    });
 });
 
-bot.command('stopseeking', async (ctx) => {
-    clearInterval(craInterval);
-    ctx.reply('Seeking stopped');
-});
+
 
 bot.launch();
