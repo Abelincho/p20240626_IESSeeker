@@ -1,31 +1,32 @@
 import seek from "./seeker.js";
 import { Telegraf } from "telegraf";
+import EventEmitter from "events";
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+const ee = new EventEmitter();
 
 let currentStatus = 'Not seeking';
-const checkRegistrationAvailability = async () => {
-    seek().then((message) => {
-        currentStatus = message;
-    });
-};
-
-setInterval(() => {
-    checkRegistrationAvailability();
-    console.log(currentStatus);
-}, 1000 * 5);
-
 
 bot.command('seek', async (ctx) => {
-    ctx.reply('Seeking...');
-    ctx.reply(currentStatus);
+    let awaitingResponse = true;
     const craInterval = setInterval(async () => {
-        ctx.reply(currentStatus);
-    }, 1000 * 10);
+        seek().then((message) => {
+            if (message.includes('Some content has changed')){
+                currentStatus = message;
+                console.log(currentStatus);
+                ee.emit('update');
+            }
+        });
+    }, 1000 * 5);
 
-    bot.command('stopseeking', async (ctx) => {
-        clearInterval(craInterval);
-        ctx.reply('Seeking stopped');
+    ctx.reply('Seeking...\n\nYou will be notified of any changes! :D');
+
+    ee.on('update', () => {
+        if(awaitingResponse){
+            ctx.reply('Some content has changed...\n\nCheck it out!' + '\n\n' + process.env.COMP_URL);  
+            clearInterval(craInterval);
+            awaitingResponse = false;
+        }
     });
 });
 

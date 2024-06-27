@@ -11,6 +11,7 @@
   "author": "Abel Saña Falagán",
   "license": "ISC",
   "dependencies": {
+    "events": "^3.3.0",
     "express": "^4.19.2",
     "node-fetch": "^3.3.2",
     "playwright": "^1.45.0",

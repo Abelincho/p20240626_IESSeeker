@@ -1,7 +1,6 @@
 import { chromium } from 'playwright';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { message } from 'telegraf/filters';
 
 
 const __filename = fileURLToPath(import.meta.url);
